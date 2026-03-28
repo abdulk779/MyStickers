@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticker Shop - Fun Stickers Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sticker-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sticker-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .sticker-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .sticker-card:hover::before {
+            left: 100%;
+        }
+
+        .sticker-emoji {
+            font-size: 6em;
+            margin-bottom: 15px;
+            display: block;
+            filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.3));
+        }
+
+        .sticker-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .sticker-desc {
+            color: #666;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .buy-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(238, 90, 36, 0.6);
+        }
+
+        .categories {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .category-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 10px 25px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .sticker-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 2em;
+            animation: float 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts">✨</div>
+    
+    <div class="header">
+        <h1>🎉 Sticker Shop 🎉</h1>
+        <p>Collect the coolest stickers for your messages!</p>
+    </div>
+
+    <div class="categories">
+        <button class="category-btn active" onclick="filterStickers('all')">All</button>
+        <button class="category-btn" onclick="filterStickers('animals')">Animals</button>
+        <button class="category-btn" onclick="filterStickers('food')">Food</button>
+        <button class="category-btn" onclick="filterStickers('emotions')">Emotions</button>
+        <button class="category-btn" onclick="filterStickers('objects')">Objects</button>
+    </div>
+
+    <div class="sticker-grid" id="stickerGrid">
+        <!-- Animals -->
+        <div class="sticker-card" data-category="animals">
+            <span class="sticker-emoji">🐱</span>
+            <div class="sticker-name">Cute Cat</div>
+            <div class="sticker-desc">Perfect for cat lovers!</div>
+            <div class="price">$0.99</div>
+            <button class="buy-btn" onclick="buySticker('Cute Cat')">Add to Cart 🛒</button>
+        </div>
+
+        <div class="sticker-card" data-category="animals">
+            <span class="sticker-emoji">🐶</span>
+            <div class="sticker-name">Happy Dog</div>
+            <div class="sticker-desc">Wag your tail with joy!</div>
+            <div class="price">$0.99</div>
+            <button class="buy-btn" onclick="buySticker('Happy Dog')">Add to Cart 🛒</button>
+        </div>
+
+        <div class="sticker-card" data-category="animals">
+            <span class="sticker-emoji">🦄</span>
+            <div class="sticker-name">Magic Unicorn</div>
+            <div class="sticker-desc">Sprinkle some magic!</div>
+            <div class="price">$1.49</div>
+            <button class="buy-btn" onclick="buySticker('Magic Unicorn')">Add to Cart 🛒</button>
+        </div>
+
+        <!-- Food -->
+        <div class="sticker-card" data-category="food">
+            <span class="sticker-emoji">🍕</span>
+            <div class="sticker-name">Pizza Party</div>
+            <div class="sticker-desc">Pizza time anywhere!</div>
+            <div class="price">$0.79</div>
+            <button class="buy-btn" onclick="buySticker('Pizza Party')">Add to Cart 🛒</button>
+        </div>
+
+        <div class="sticker-card" data-category="food">
+            <span class="sticker-emoji">🍩</span>
+            <div class="sticker-name">Donut Dream</div>
+            <div class="sticker-desc">Sweet tooth satisfaction</div>
+            <div class="price">$0.89</div>
+            <button class="buy-btn" onclick="buySticker('Donut Dream')">Add to Cart 🛒</button>
+        </div>
+
+        <div class="sticker-card" data-category="food">
+            <span class="sticker-emoji">🍦</span>
+            <div class="sticker-name">Ice Cream</div>
+            <div class="sticker-desc">Cool and delicious!</div>
+            <div class="price">$0.99</div>
+            <button class="buy-btn" onclick="buySticker('Ice Cream')">Add to Cart 🛒</button>
+        </div>
+
+        <!-- Emotions -->
+        <div class="sticker-card" data-category="emotions">
+            <span class="sticker-emoji">😂</span>
+            <div class="sticker-name">LOL Face</div>
+            <div class="sticker-desc">When something's hilarious</div>
+            <div class="price">$0.69</div>
+            <button class="buy-btn" onclick="buySticker('LOL Face')">Add to Cart 🛒</button>
+        </div>
+
+        <div class="sticker-card" data-category="emotions">
+            <span class="sticker-emoji">😍</span>
+            <div class="sticker-name">Heart Eyes</div>
+            <div class="sticker-desc">Total love!</div>
+            <div class="price">$0.79</div>
+            <button class="buy-btn" onclick="buySticker('Heart Eyes')">Add to Cart 🛒</button>
+        </div>
+
+        <div class="sticker-card" data-category="emotions">
+            <span class="sticker-emoji">😎</span>
+            <div class="sticker-name">Cool Dude</div>
+            <div class="sticker-desc">Stay cool always</div>
+            <div class="price">$0.89</div>
+            <button class="buy-btn" onclick="buySticker('Cool Dude')">Add to Cart 🛒</button>
+        </div>
+
+        <!-- Objects -->
+        <div class="sticker-card" data-category="objects">
+            <span class="sticker-emoji">🚀</span>
+            <div class="sticker-name">Rocket Ship</div>
+            <div class="sticker-desc">To the moon!</div>
+            <div class="price">$1.29</div>
+            <button class="buy-btn" onclick="buySticker('Rocket Ship')">Add to Cart 🛒</button>
+        </div>
+
+        <div class="sticker-card" data-category="objects">
+            <span class="sticker-emoji">🎸</span>
+            <div class="sticker-name">Rock Guitar</div>
+            <div class="sticker-desc">Rock on! 🎵</div>
+            <div class="price">$1.19</div>
+            <button class="buy-btn" onclick="buySticker('Rock Guitar')">Add to Cart 🛒</button>
+        </div>
+
+        <div class="sticker-card" data-category="objects">
+            <span class="sticker-emoji">⚡</span>
+            <div class="sticker-name">Lightning Bolt</div>
+            <div class="sticker-desc">Super charged energy!</div>
+            <div class="price">$0.99</div>
+            <button class="buy-btn" onclick="buySticker('Lightning Bolt')">Add to Cart 🛒</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+
+        function buySticker(stickerName) {
+            cart.push(stickerName);
+            // Create fun animation
+            const sparkle = document.createElement('div');
+            sparkle.innerHTML = '✨';
+            sparkle.style.position = 'fixed';
+            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+            sparkle.style.top = '50%';
+            sparkle.style.fontSize = '2em';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.animation = 'float 2s ease-out forwards';
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => sparkle.remove(), 2000);
+            
+            alert(`Added "${stickerName}" to cart! 🎉\nCart now has ${cart.length} items.`);
+        }
+
+        function filterStickers(category) {
+            const cards = document.querySelectorAll('.sticker-card');
+            const buttons = document.querySelectorAll('.category-btn');
+            
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.5s ease-in';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Add some entrance animation
+        window.addEventListener('load', () => {
+            const cards = document.querySelectorAll('.sticker-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
